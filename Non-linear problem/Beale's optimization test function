@@ -1,0 +1,337 @@
+    //============================================================================
+    // Name        : Simple_GA.cpp
+    // Author      : AZK
+    // Version     :
+    // Copyright   : Your copyright notice
+    // Description : To solve the following non-linear problem (Beale optimization test function):
+    //               Min (1.5-x+xy)^2+(2.25-x+xy^2)^2+(2.625-x+xy^3)^2
+    //               s.t. -4.5<=x,y<=4.5
+    //               global optimal solution is x1=3,y=0.5 Min Z=0
+    //============================================================================
+    
+    #include <iostream>
+    #include <stdlib.h>
+    #include <time.h>
+    #include<math.h>
+    using namespace std;
+    
+    void cal_fit(double sol[][2],double targ[])
+    {   double obj_val=0,pen_val=0;
+    
+        for(int i=0;i<100;i++)
+        {   obj_val=0,pen_val=0;
+            obj_val=pow(1.5-sol[i][0]+(sol[i][0]*sol[i][1]),2)+pow(2.25-sol[i][0]+(sol[i][0]*sol[i][1]*sol[i][1]),2)+pow(2.625-sol[i][0]+(sol[i][0]*sol[i][1]*sol[i][1]*sol[i][1]),2);
+            /*if(2*sol[i][0]+sol[i][1]>1000)
+            pen_val = (1000-(2*sol[i][0]+sol[i][1]));
+            if(sol[i][0]+sol[i][1]>800)
+            pen_val=pen_val + (800-(sol[i][0]+sol[i][1]));
+            if(sol[i][0]>400)
+            pen_val=pen_val + 10*(400-sol[i][0]);
+            //pen_val=pen_val*10;
+    
+            targ[i]=obj_val + 3*pen_val;*/
+            targ[i]=obj_val;
+            }
+    }
+    
+    void cross(double pop[][2])
+    {
+        int crossed[100],choice1,choice2,complete=0;
+        double temp1,temp2,temp3,temp4,a,pc;
+        for (int i=0;i<100;i++)
+        crossed[i]=-1;
+        srand((unsigned)time(NULL));
+        while(complete==0)
+        {  complete=1;
+            do{
+             choice1=rand()%100;
+             choice2=rand()%100;
+        }while(choice1==choice2);
+    
+             if(crossed[choice1]!=1 and crossed[choice2]!=1)
+             {  pc=(double)rand()/(double)RAND_MAX;
+                if(pc<=0.85)
+                {/*a=((double)rand()/(double)RAND_MAX);
+                 temp1=pop[choice1][0];
+                 temp2=pop[choice1][1];
+                 temp3=pop[choice2][0];
+                 temp4=pop[choice2][1];
+                 pop[choice1][0]=a*temp1+(1-a)*temp3;
+                 pop[choice1][1]=a*temp2+(1-a)*temp4;
+                 pop[choice2][0]=(1-a)*temp1+a*temp3;
+                 pop[choice2][1]=(1-a)*temp2+a*temp4;*/
+                 if (pop[choice1][0]>pop[choice2][0])
+                 {
+                     pop[choice1][0]=pop[choice2][0]+((double)rand()/(double)RAND_MAX)*(pop[choice1][0]-pop[choice2][0]);
+                     pop[choice2][0]=pop[choice2][0]+((double)rand()/(double)RAND_MAX)*(pop[choice1][0]-pop[choice2][0]);
+                 }
+                 else 
+                 {
+                     pop[choice1][0]=pop[choice1][0]+((double)rand()/(double)RAND_MAX)*(pop[choice2][0]-pop[choice1][0]);
+                     pop[choice2][0]=pop[choice1][0]+((double)rand()/(double)RAND_MAX)*(pop[choice2][0]-pop[choice1][0]);
+                     
+                 }
+                 if (pop[choice1][1]>pop[choice2][1])
+                 {
+                     pop[choice1][1]=pop[choice2][1]+((double)rand()/(double)RAND_MAX)*(pop[choice1][1]-pop[choice2][1]);
+                     pop[choice2][1]=pop[choice2][1]+((double)rand()/(double)RAND_MAX)*(pop[choice1][1]-pop[choice2][1]);
+                 }
+                 else 
+                 {
+                     pop[choice1][1]=pop[choice1][1]+((double)rand()/(double)RAND_MAX)*(pop[choice2][1]-pop[choice1][1]);
+                     pop[choice2][1]=pop[choice1][1]+((double)rand()/(double)RAND_MAX)*(pop[choice2][1]-pop[choice1][1]);
+                     
+                 }
+    
+                }
+                crossed[choice1]=1;
+                crossed[choice2]=1;
+    
+             }
+             for(int i=0;i<6;i++)
+             {
+                 if (crossed[i]==-1)
+                 {
+                     complete=0;
+                     break;
+                 }
+             }
+    
+    
+    
+        }
+    
+    
+    
+    }
+    void quicksort(double sol[][2],double fit[],int l, int r)
+    {
+        if(l>=r)
+        return;
+        double pivot=fit[r];
+        int cnt=l;
+        double temp;
+        for(int i=l;i<=r;i++)
+        {
+            if(fit[i]<=pivot)
+        {
+           temp=fit[i];
+           fit[i]=fit[cnt];
+           fit[cnt]=temp;
+           temp=sol[i][0];
+           sol[i][0]=sol[cnt][0];
+           sol[cnt][0]=temp;
+           temp=sol[i][1];
+           sol[i][1]=sol[cnt][1];
+           sol[cnt][1]=temp;
+           cnt++;
+        }
+        }
+        quicksort(sol,fit,l,cnt-2);
+        quicksort(sol,fit,cnt,r);
+    }
+    
+    void mutate(double sol[][2])
+    {
+        double pm;
+        srand((unsigned) time(NULL));
+        for(int i=0;i<100;i++)
+        {
+            pm=(double)rand()/(double)RAND_MAX;
+    	    if(pm<=0.15)
+    	    {
+    
+    	    //do
+    	   // {
+    	       sol[i][0]=((double)rand()/(double)RAND_MAX)*(9)-4.5;
+    	       sol[i][1]=((double)rand()/(double)RAND_MAX)*(9)-4.5;
+    	   // }while(2*sol[i][0]+sol[i][1]>1000 or sol[i][0]+sol[i][1]>800);
+        }
+    }
+    }
+    
+    int main()
+    {
+    
+    	double trial[100][2];
+    	double selected[100][2];
+    	double fit_val[100];
+    	double avg_fit=0,mfval=0;
+    	double temp,frac,m1,m2;
+    	double hall_of_fame[10][2];
+    	int sum=0;
+    	int pm,mfgen,cnt=0;
+    	int exp_cnt[100],i,j,gen_cnt=1;
+    
+    	srand((unsigned) time(NULL));
+    
+    	for ( i = 0; i < 100; i++) {
+    		//do{
+    		for( j = 0; j < 2; j++)
+    		{
+    		    if(j==0)
+    		    trial[i][j]=((double)rand()/(double)RAND_MAX)*(9)-4.5;
+    		    else
+    			trial[i][j]=((double)rand()/(double)RAND_MAX)*(9)-4.5;
+    
+    		}
+    
+    
+    		//}while(2*trial[i][0]+trial[i][1]>1000 or trial[i][0]+trial[i][1]>800);
+    
+    
+    	}
+    
+    
+    	do
+    	{   avg_fit=0;
+    	    if(gen_cnt==1)
+    	    {
+    	     cal_fit(trial,fit_val);
+    	     quicksort(trial,fit_val,0,99);
+    	     mfval=fit_val[0];
+    	    }
+    
+         for(i=0;i<100;i++)
+    	{
+    	    if(fit_val[i]<mfval)
+    	    {
+    	    mfval=fit_val[i];
+    	    mfgen=gen_cnt;
+    	    m1=trial[i][0];
+    	    m2=trial[i][1];
+    	    }
+    
+    
+    	}
+    	
+    	for(i=0;i<10;i++)
+    	{
+    		    
+    		     hall_of_fame[i][0]=trial[i][0];
+    		     hall_of_fame[i][1]=trial[i][1];
+    		    
+    	}
+    	/*for(i=0;i<100;i++)
+        {
+            avg_fit=avg_fit+fit_val[i];
+    	    //cout<<trial[i][0]<<" "<<trial[i][1]<<" "<<fit_val[i]<<"\n";
+    	}
+    	avg_fit=avg_fit/100;
+    
+    	for( i=0;i<100;i++)
+    	{
+    	    temp=fit_val[i]/avg_fit;
+    	    frac=temp-(int)temp;
+    	    if (frac>=0.5)
+    	    temp=(int)temp+1;
+    	    exp_cnt[i]=(int)temp;
+    	    sum=exp_cnt[i]+sum;
+    
+    	}
+    	for(i=0,j=0;i<100 and j<100;i++)
+    	{
+    	    cnt=exp_cnt[i];
+    	    while(cnt>0)
+    	    {
+    	        selected[j][0]=trial[i][0];
+    	        selected[j][1]=trial[i][1];
+    	        j=j+1;
+    	        cnt--;
+    	    }
+    	}
+    
+    	//cout<<"sum="<<sum<<"\ni="<<i<<"\nj="<<j<<"\n";
+    	int ind=0;
+    	if (j<=99)
+    	{
+    	    for(i=j;i<100;i++)
+    	    {selected[i][0]=trial[ind][0];
+    	    selected[i][1]=trial[ind][1];
+    	    ind++;
+    	    }
+    	}*/
+        /*double rsum;
+    	for(i=0;i<6;i++)
+    	{   cnt=0,j=0;
+    		rsum=((double)rand()/(double)RAND_MAX)*avg_fit;
+    		while(1==1)
+    		{
+    			cnt+=fit_val[j];
+    			if (cnt>rsum)
+    			break;
+    			else
+    			j=j+1;
+    		}
+    		selected[i][0]=trial[j][0];
+    		selected[i][1]=trial[j][1];
+    
+    		}*/
+    	//cout<<"sum="<<sum<<"\ni="<<i<<"\nj="<<j<<"\n";
+    	/*int ind=0;
+    	if (j<=99)
+    	{
+    	    for(i=j;i<100;i++)
+    	    {selected[i][0]=trial[ind][0];
+    	    selected[i][1]=trial[ind][1];
+    	    ind++;
+    	    }
+    	}*/
+    	//cout<<"x1      x2       fit_val\n";
+    	/*for( i=0;i<100;i++)
+        {
+            //avg_fit=avg_fit+fit_val[i];
+    	    cout<<trial[i][0]<<" "<<trial[i][1]<<" "<<fit_val[i]<<" "<<exp_cnt[i]<<" "<<selected[i][0]<<" "<<selected[i][1]<<"\n";
+    	}
+    	cout<<"avg fit="<<avg_fit<<"\n";*/
+    	cross(trial);
+    	mutate(trial);
+    	//quicksort(trial,fit_val,0,99);
+    	
+    	
+    	cal_fit(trial,fit_val);
+    	quicksort(trial,fit_val,0,99);
+    	for(i=100;i>90;i--)
+    		for(j=0;j<2;j++)
+    			trial[i-1][j]=hall_of_fame[100-i][j];
+        //cal_fit(trial,fit_val);
+    	
+        
+    	/*cout<<"generation "<<gen_cnt<<" results: \n";
+    	for(i=0;i<6;i++)
+    	{
+    	if ((2*trial[i][0]+trial[i][1]<=1000) and (trial[i][0]+trial[i][1]<=800))
+    	cout<<trial[i][0]<<" "<<trial[i][1]<<" "<<fit_val[i]<<" feasible\n";
+    	else
+    	cout<<trial[i][0]<<" "<<trial[i][1]<<" "<<fit_val[i]<<" infeasible\n";
+    	}*/
+    
+    	/*for( i=0;i<100;i++)
+    	  for( j=0;j<2;j++)
+    	   trial[i][j]=selected[i][j];*/
+    
+    
+    	cal_fit(trial,fit_val);
+    	quicksort(trial,fit_val,0,99);
+    	gen_cnt++;
+    	//cout<<gen_cnt<<":"<<avg_fit<<"\n";
+    	}while(gen_cnt<=50000);
+    
+    	//quicksort(trial,fit_val,0,5);
+    	cout<<"final generation results: \n";
+    	for( i=0;i<100;i++)
+    	{
+    	if ((2*trial[i][0]+trial[i][1]<=1000) and (trial[i][0]+trial[i][1]<=800))
+    	cout<<trial[i][0]<<" "<<trial[i][1]<<" "<<fit_val[i]<<" feasible\n";
+    	else
+    	cout<<trial[i][0]<<" "<<trial[i][1]<<" "<<fit_val[i]<<" infeasible\n";
+    	}
+    	cout<<"Maximum feasible objective value was attained in "<<mfgen<<"th generation";
+    	cout<<"\nOptimum solution: x1 = "<<m1<<" x2 = "<<m2<<" Max Z = "<<mfval;
+    
+    
+    	return 0;
+    
+    
+    }
+    
