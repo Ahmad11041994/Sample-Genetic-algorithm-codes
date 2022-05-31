@@ -1,0 +1,9 @@
+/*This code implements a genetic algorithm to solve the following LPP:
+Maximize Z=4x1+3x2
+subject to 
+         2x1+x2<=1000
+         x1+x2<=800
+         x1<=400,x2<=700
+         x1,x2>=0
+The global optimal solution to this problem is x1=200,x2=600, Max Z=2600. 
+This code can be easily executed on any IDE or online GDB without the need of any input.*/    
