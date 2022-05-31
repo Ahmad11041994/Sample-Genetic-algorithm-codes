@@ -1,0 +1,6 @@
+This code illustrates the nondominated sorting genetic algorithm-II on one of its test problems (KUR). 
+The problem is too complex to be written on a text file.
+Therefore, I have also included a screenshot of the test problem. For details please refer to: 
+K. Deb, A. Pratap, S. Agarwal and T. Meyarivan, "A fast and elitist multiobjective genetic algorithm: NSGA-II," 
+in IEEE Transactions on Evolutionary Computation, vol. 6, no. 2, pp. 182-197, April 2002,
+doi: 10.1109/4235.996017.
