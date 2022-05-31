@@ -1,0 +1,5 @@
+/*This code implements a genetic algorithm for the Beale optimization test function:
+              Min (1.5-x+xy)^2+(2.25-x+xy^2)^2+(2.625-x+xy^3)^2
+              subject to
+                      -4.5<=x,y<=4.5.
+ Global optimal solution is x1=3,y=0.5 Min Z=0. This code can be easily executed on any IDE or online GDB without any input.
